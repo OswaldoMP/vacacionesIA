@@ -8,89 +8,140 @@ from matplotlib import pyplot as plt
 
                     # gray-world
 
-imagenPrincipal = cv2.imread('1.jpg')#cargar la imagen
+imagenPrincipal = cv2.imread('4.jpg')#cargar la imagen
 cv2.imshow('Principal',imagenPrincipal)
 
 
-val=float(1**2.2)
+setGama=input('Gamma :')
+
+# setGamaV=float(1**float(setGama))
 imagenPrincipal=imagenPrincipal.astype(float)        
-imagenPrincipal[:,:]=(float((val)))*((imagenPrincipal[:,:].astype(float))**(float(2.2)))
+# imagenPrincipal[:,:]=(float((setGamaV)))*((imagenPrincipal[:,:].astype(float))**(float(setGama)))
 
 
-# HDR
-visua=np.amax(imagenPrincipal)
-image_HDR=np.array(imagenPrincipal,dtype=np.float64)
-image_HDR[:,:]=(image_HDR[:,:].astype(float)/float(visua))*(255.0)
-tonemap1 = cv2.createTonemap(gamma=2.2)
-res_debvec = tonemap1.process(imagenPrincipal.copy()) 
-cv_image =  np.clip(res_debvec*255, 0, 255).astype('uint8')
-imS = cv2.resize(cv_image, (imagenPrincipal.shape[0], imagenPrincipal.shape[1]))                    
-image_HDR=np.array(image_HDR,dtype=np.uint8)
-cv2.imshow("Gamma 2.2", image_HDR)  
+# # HDR
+pixelAlto=np.amax(imagenPrincipal)
+print('PixelAlto')
+print(pixelAlto)
+hdrImagen=np.array(imagenPrincipal,dtype=np.float64)#prepara la imgaen hdr
+hdrImagen[:,:]=(hdrImagen[:,:].astype(float)/float(pixelAlto))*(255.0)#usar clanal de 8 bits
+tonemap1 = cv2.createTonemap(gamma=float(setGama))#asignado gama
+res_debvec = tonemap1.process(imagenPrincipal.copy())#alterando pixel por la gamma 
+hdrImagen=np.array(hdrImagen,dtype=np.uint8)#refactor a unit8
+cv2.imshow("Gamma "+str(setGama), hdrImagen)  
 
-imagenPrincipal = image_HDR
-
-imagenPrincipal = imagenPrincipal.copy()
-imagenPrincipal=imagenPrincipal.astype(float) 
-
-sumaCanalRed = np.sum(imagenPrincipal[:, :, 2])#obtener suma total, canal rojo
-sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1])#obtener suma total, canal verde
-sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0])#obterner suma total, canal azul
-print('RGB')
-
-print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
-
-# buscar el canal, elegir canal
-if sumaCanalBlue < sumaCanalGreen: #si blue es menor a green
-    if sumaCanalBlue < sumaCanalRed: #si blue es menor a red
-        canal = 0 #canal es blue
-        print('blue escogido')
-    else: #red fue menor a blue
-        canal = 2
-        print('red escogido')
-else:#green fue menor a blue
-    if sumaCanalGreen < sumaCanalRed:#si green es menor a red
-        canal = 1
-        print('green escogido')
-    else: #red fue el menor
-        canal = 2
-        print('red escogido')
-
-print(canal)
-
-# realizar operecion por el canal escogido
-if canal == 0: #canal azul escogido
-    factorB = 1
-    factorG = sumaCanalBlue / sumaCanalGreen 
-    factorR = sumaCanalBlue / sumaCanalRed
-elif canal == 1: #canal verde escogido
-    factorG = 1
-    # totalG = totalG
-    factorB = sumaCanalGreen / sumaCanalBlue
-    factorR = sumaCanalGreen / sumaCanalRed
-elif canal == 2: #canal rojo escogido
-    factorR = 1
-    # totalR = totalR
-    factorG = sumaCanalRed / sumaCanalGreen
-    factorB = sumaCanalRed / sumaCanalBlue
+imagenPrincipal = hdrImagen
 
 
-print('Cambiado')
-print('blue' ,factorB)
-print('green', factorG)
-print('red', factorR)
+def grayWorld():
+    sumaCanalRed = np.sum(imagenPrincipal[:, :, 2])#obtener suma total, canal rojo
+    sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1])#obtener suma total, canal verde
+    sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0])#obterner suma total, canal azul
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB GW')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
 
-# balancear los canales por los resultado de obtenidos
-imagenPrincipal[:,:,0]=(imagenPrincipal[:,:,0].astype(float))*(float(factorB))
-imagenPrincipal[:,:,1]=(imagenPrincipal[:,:,1].astype(float))*(float(factorG))
-imagenPrincipal[:,:,2]=(imagenPrincipal[:,:,2].astype(float))*(float(factorR))
+    canal = getCanal(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)#obtener el menor canal para realizar balanceo
 
-cv2.imwrite('gray-world.jpg',imagenPrincipal)
-cv2.imshow('gray-world', cv2.imread('gray-world.jpg'))
+    rPrima,gPrima,bPrima = getRgbPrima(canal,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+
+    imagenPrincipal[:,:,0]=(imagenPrincipal[:,:,0].astype(float))*(float(bPrima))
+    imagenPrincipal[:,:,1]=(imagenPrincipal[:,:,1].astype(float))*(float(gPrima))
+    imagenPrincipal[:,:,2]=(imagenPrincipal[:,:,2].astype(float))*(float(rPrima))
+    cv2.imwrite('gray-world.jpg',imagenPrincipal)
+    cv2.imshow('gray-world', cv2.imread('gray-world.jpg'))
+
+    pass
+
+def sacaleByMax():
+    sumaCanalRed = np.max(imagenPrincipal[:,:,2])#obtener suma total, canal rojo
+    sumaCanalGreen = np.max(imagenPrincipal[:,:,1])#obtener suma total, canal verde
+    sumaCanalBlue = np.max(imagenPrincipal[:,:,0])#obtener suma total, canal azul
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB SBM')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+
+    canal = getCanal(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)#obtener el menor canal para realizar balanceo
+    
+    rPrima,gPrima,bPrima = getRgbPrima(canal,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+
+    imagenPrincipal[:,:,0]=(imagenPrincipal[:,:,0].astype(float))*(float(bPrima))
+    imagenPrincipal[:,:,1]=(imagenPrincipal[:,:,1].astype(float))*(float(gPrima))
+    imagenPrincipal[:,:,2]=(imagenPrincipal[:,:,2].astype(float))*(float(rPrima))
+    cv2.imwrite('ScaleByMax.jpg',imagenPrincipal)
+    cv2.imshow('ScaleByMax', cv2.imread('ScaleByMax.jpg'))
+
+    pass
+
+def shadesOfGray():
+    P=6
+    sumaCanalRed = np.sum(imagenPrincipal[:, :, 2]**float(P))**float(1/P)
+        # sumaCanalRed = np.sum(imagenPrincipal[:,:,2]**float(P))**float(1/P)
+    sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1]**float(P))**float(1/P)
+    sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0]**float(P))**float(1/P)
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB SOG')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+
+    canal = getCanal(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)#obtener el menor canal para realizar balanceo
+    # canal=1
+    rPrima,gPrima,bPrima = getRgbPrima(canal,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+
+    imagenPrincipal[:,:,0]=(imagenPrincipal[:,:,0].astype(float))*(float(bPrima))
+    imagenPrincipal[:,:,1]=(imagenPrincipal[:,:,1].astype(float))*(float(gPrima))
+    imagenPrincipal[:,:,2]=(imagenPrincipal[:,:,2].astype(float))*(float(rPrima))
+    cv2.imwrite('shadesOfGray.jpg',imagenPrincipal)
+    cv2.imshow('shadesOfGray P:'+str(P), cv2.imread('shadesOfGray.jpg'))
+    pass
+
+def getCanal( sumaCanalRed,sumaCanalGreen,sumaCanalBlue):
+    # buscar el canal, elegir canal
+    if sumaCanalBlue < sumaCanalGreen: #si blue es menor a green
+        if sumaCanalBlue < sumaCanalRed: #si blue es menor a red
+            canal = 0 #canal es blue
+            print('blue escogido')
+        else: #red fue menor a blue
+            canal = 2
+            print('red escogido')
+    else:#green fue menor a blue
+        if sumaCanalGreen < sumaCanalRed:#si green es menor a red
+            canal = 1
+            print('green escogido')
+        else: #red fue el menor
+            canal = 2
+            print('red escogido')
+
+    print(canal)
+    return canal
+
+
+def getRgbPrima( canal, sumaCanalRed,sumaCanalGreen,sumaCanalBlue):
+    # realizar operecion por el canal escogido
+    if canal == 0: #canal azul escogido
+        bPrima = 1
+        gPrima = sumaCanalBlue / sumaCanalGreen 
+        rPrima = sumaCanalBlue / sumaCanalRed
+    elif canal == 1: #canal verde escogido
+        gPrima = 1
+        bPrima = sumaCanalGreen / sumaCanalBlue
+        rPrima = sumaCanalGreen / sumaCanalRed
+    elif canal == 2: #canal rojo escogido
+        rPrima = 1
+        gPrima = sumaCanalRed / sumaCanalGreen
+        bPrima = sumaCanalRed / sumaCanalBlue
+
+    print('Cambiado')
+    print('blue' ,bPrima)
+    print('green', gPrima)
+    print('red', rPrima)
+    return rPrima,gPrima,bPrima
 
 
 
 
+grayWorld()
+sacaleByMax()
+shadesOfGray()
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
