@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 
-# import tensorflow
-# import keras
+import tensorflow
+import keras
 from matplotlib import pyplot as plt
 
 
@@ -14,9 +14,9 @@ cv2.imshow('Principal',imagenPrincipal)
 
 setGama=input('Gamma :')
 
+# setGamaV=float(1**float(setGama))
 imagenPrincipal=imagenPrincipal.astype(float)        
-# gammaY=float(1**float(setGama))#I ~ u^y
-# imagenPrincipal[:,:]=((imagenPrincipal[:,:].astype(float))**(float(setGama)))
+# imagenPrincipal[:,:]=(float((setGamaV)))*((imagenPrincipal[:,:].astype(float))**(float(setGama)))
 
 
 # # HDR
@@ -74,11 +74,11 @@ def sacaleByMax():
     pass
 
 def shadesOfGray():
-    P=6
-    sumaCanalRed = np.sum(imagenPrincipal[:, :, 2]**float(P))**float(1/P)
+    P=1
+    sumaCanalRed = (np.sum(imagenPrincipal[:,:,2])**float(P))**float(1/P)
         # sumaCanalRed = np.sum(imagenPrincipal[:,:,2]**float(P))**float(1/P)
-    sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1]**float(P))**float(1/P)
-    sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0]**float(P))**float(1/P)
+    sumaCanalGreen = (np.sum(imagenPrincipal[:,:,1])**float(P))**float(1/P)
+    sumaCanalBlue = (np.sum(imagenPrincipal[:,:,0])**float(P))**float(1/P)
     print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
     print('RGB SOG')
     print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
