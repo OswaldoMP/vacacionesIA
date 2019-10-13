@@ -4,7 +4,7 @@ import cv2
 # import keras
 from matplotlib import pyplot as plt
 
-
+P = 2
 
                     # gray-world
 
@@ -22,13 +22,14 @@ pixelAlto=np.amax(imagenPrincipal)
 print('PixelAlto')
 print(pixelAlto)
 hdrImagen=np.array(imagenPrincipal,dtype=np.float64)#prepara la imgaen hdr
-hdrImagen[:,:]=(hdrImagen[:,:].astype(float)/float(pixelAlto))*(255.0)#usar clanal de 8 bits
+hdrImagen[:,:]=(hdrImagen[:,:].astype(float)/float(pixelAlto))*(255.0)
 tonemap1 = cv2.createTonemap(gamma=float(setGama))#asignado gama
 res_debvec = tonemap1.process(imagenPrincipal.copy())#alterando pixel por la gamma 
 hdrImagen=np.array(hdrImagen,dtype=np.uint8)#refactor a unit8
 cv2.imshow("Gamma "+str(setGama), hdrImagen)  
 
-# imagenPrincipal = hdrImagen * gammaY #u~i1/y
+imagenPrincipal = hdrImagen
+# imagenPrincipal = (hdrImagen * imagenPrincipal) ** gammaY
 
 
 def grayWorld():
@@ -65,7 +66,7 @@ def sacaleByMax():
 
 def shadesOfGray():
     # P=float(input('Valor P :'))
-    P = 2
+    global P
 
     sumaCanalRed = np.sum(imagenPrincipal[:, :, 2]**float(P))**float(1/P)
     sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1]**float(P))**float(1/P)
@@ -77,8 +78,16 @@ def shadesOfGray():
     # print('MINOMOOOO: ',minimo)    
     rPrima,gPrima,bPrima = getRgbPrima(minimo,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     resetImage(rPrima,gPrima,bPrima)
-    cv2.imwrite('resultadoBalanceColor/shadesOfGray.jpg',imagenPrincipal)
+    cv2.imwrite(f'resultadoBalanceColor/shadesOfGray{P}.jpg',imagenPrincipal)
     cv2.imshow('shadesOfGray P:'+str(P), cv2.imread('resultadoBalanceColor/shadesOfGray.jpg'))
+    if P == 2:
+        P = 4
+        shadesOfGray()
+        pass
+    elif P == 4:
+        P = 6
+        shadesOfGray()
+        pass
     pass
 
 def resetImage(rPrima,gPrima,bPrima):
