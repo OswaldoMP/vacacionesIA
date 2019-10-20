@@ -37,7 +37,7 @@ def otsuImage(rutaImage):
 
 def adatativeImage(rutaImage):
     imagen = cv2.imread(rutaImage,0)#obtener la imagen y convertir a gris
-
+   
     # Local adaptativa
     img = cv2.medianBlur(imagen,5)
     # img = cv2.medianBlur(tOtsu,5)
