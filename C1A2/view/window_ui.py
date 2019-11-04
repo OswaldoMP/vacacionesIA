@@ -62,11 +62,21 @@ class IForm(object):
         font.setPointSize(12)
         self.buttonColor = QtWidgets.QPushButton(Form)
         self.buttonColor.setGeometry(QtCore.QRect(200,220 , 90, 25))
-        self.buttonColor.setObjectName("buttonColor")     
+        self.buttonColor.setObjectName("buttonColor") 
+
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.buttonCont = QtWidgets.QPushButton(Form)
+        self.buttonCont.setGeometry(QtCore.QRect(50,220 , 90, 25))
+        self.buttonCont.setObjectName("buttonCont")     
     
         self.textGamma = QtWidgets.QLineEdit(Form)#K
         self.textGamma.setObjectName("textGamma")
         self.textGamma.setGeometry(QtCore.QRect(100, 40, 50, 20))
+
+        self.textCont = QtWidgets.QLineEdit(Form)#K
+        self.textCont.setObjectName("textCont")
+        self.textCont.setGeometry(QtCore.QRect(122, 100, 50, 20))
 
 
         # self.textNMax = QtWidgets.QLineEdit(Form)#NMAX
@@ -96,6 +106,13 @@ class IForm(object):
         self.gamma.setFont(font)
         self.gamma.setObjectName("gamma")
         self.gamma.setGeometry(QtCore.QRect(40, 0, 55, 95))
+
+        self.cont = QtWidgets.QLabel(Form)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.cont.setFont(font)
+        self.cont.setObjectName("cont")
+        self.cont.setGeometry(QtCore.QRect(10, 0, 150, 220))
 
         # self.nMax = QtWidgets.QLabel(Form)
         # font = QtGui.QFont()
@@ -144,8 +161,10 @@ class IForm(object):
         self.buttonOtsu.setText(_translate('Form','Otsu'))
         self.buttonAdap.setText(_translate('Form','Adaptativa'))
         self.buttonColor.setText(_translate('Form','Balance Color'))
+        self.buttonCont.setText(_translate('Form','Contar Objetos'))
         # self.nMax.setText(_translate("Form", "NMAX: "))
         self.gamma.setText(_translate("Form", "Gamma: "))
+        self.cont.setText(_translate('Form','Total de Objetos:'))
         # self.m.setText(_translate("Form", "M: "))
         # self.tMax.setText(_translate("Form", "TMAX: "))
         # self.t0.setText(_translate("Form", "T0: "))

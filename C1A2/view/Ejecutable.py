@@ -1,11 +1,14 @@
 from window_ui import *
 from Binarizacion import Binarizacion
 from Color import Color
+from ContObject import ContObject
+import cv2
 
 class MainWindow(QtWidgets.QMainWindow, IForm):
     image = ""
     metodo = ""
     metodoColor = ""
+    metodoContObj = ''
 
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
@@ -16,10 +19,11 @@ class MainWindow(QtWidgets.QMainWindow, IForm):
         self.buttonAdap.clicked.connect(self.adap)
         self.buttonEjecutar.clicked.connect(self.fondo)
         self.buttonColor.clicked.connect(self.color)
+        self.buttonCont.clicked.connect(self.contObj)
         
         
     def selectImage(self):
-        global image, metodo, metodoColor
+        global image, metodo, metodoColor, metodoContObj
         # imageLabel = QtWidgets.QLabel()
         image , _ = QtWidgets.QFileDialog.getOpenFileName(None,
         'Select Image', '', "Image files (*.jpg *.png *.jpeg)")    
@@ -27,6 +31,7 @@ class MainWindow(QtWidgets.QMainWindow, IForm):
             print('RUTA IMAGEN: ',image)
             metodo = Binarizacion(image)
             metodoColor = Color(image)
+            metodoContObj = ContObject(image)
             return image
             # pixmap = QtGui.QPixmap(image)    
             # imageLabel.setPixmap(pixmap)
@@ -56,6 +61,13 @@ class MainWindow(QtWidgets.QMainWindow, IForm):
         metodoColor.grayWorld()
         metodoColor.sacaleByMax()
         metodoColor.shadesOfGray()
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    def contObj(self):
+        global metodoContObj
+        total = metodoContObj.Cont()
+        self.textCont.setText(str(total))
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])

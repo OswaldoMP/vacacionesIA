@@ -36,11 +36,11 @@ def grayWorld():
     sumaCanalRed = np.sum(imagenPrincipal[:, :, 2])#obtener suma total, canal rojo
     sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1])#obtener suma total, canal verde
     sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0])#obterner suma total, canal azul
-    # print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
-    # print('RGB GW')
-    # print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)  
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB GW')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)  
     minimo = min(sumaCanalBlue,sumaCanalGreen,sumaCanalRed)   
-    # print('MINOMOOOO: ',minimo)
+    print('MINOMOOOO: ',minimo)
     rPrima,gPrima,bPrima = getRgbPrima(minimo,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     resetImage(rPrima,gPrima,bPrima)
     cv2.imwrite('resultadoBalanceColor/gray-world.jpg',imagenPrincipal)
@@ -52,11 +52,11 @@ def sacaleByMax():
     sumaCanalRed = np.max(imagenPrincipal[:,:,2])#obtener suma total, canal rojo
     sumaCanalGreen = np.max(imagenPrincipal[:,:,1])#obtener suma total, canal verde
     sumaCanalBlue = np.max(imagenPrincipal[:,:,0])#obtener suma total, canal azul
-    # print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
-    # print('RGB SBM')
-    # print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB SBM')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     minimo = min(sumaCanalBlue,sumaCanalGreen,sumaCanalRed)
-    # print('MINOMOOOO: ',minimo)
+    print('MINOMOOOO: ',minimo)
     rPrima,gPrima,bPrima = getRgbPrima(minimo,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     resetImage(rPrima,gPrima,bPrima)
     cv2.imwrite('resultadoBalanceColor/ScaleByMax.jpg',imagenPrincipal)
@@ -71,11 +71,11 @@ def shadesOfGray():
     sumaCanalRed = np.sum(imagenPrincipal[:, :, 2]**float(P))**float(1/P)
     sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1]**float(P))**float(1/P)
     sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0]**float(P))**float(1/P)
-    # print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
-    # print('RGB SOG')
-    # print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
+    print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+    print('RGB SOG')
+    print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     minimo = min(sumaCanalBlue,sumaCanalGreen,sumaCanalRed)
-    # print('MINOMOOOO: ',minimo)    
+    print('MINOMOOOO: ',minimo)    
     rPrima,gPrima,bPrima = getRgbPrima(minimo,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
     resetImage(rPrima,gPrima,bPrima)
     cv2.imwrite(f'resultadoBalanceColor/shadesOfGray{P}.jpg',imagenPrincipal)

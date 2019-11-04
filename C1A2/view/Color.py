@@ -38,8 +38,8 @@ class Color:
 
     def __init__(self,rutaImage):
         self.rutaImage = rutaImage
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         
 
     def imageFloat(self,gamma):
@@ -67,11 +67,11 @@ class Color:
         sumaCanalRed = np.sum(imagenPrincipal[:, :, 2])#obtener suma total, canal rojo
         sumaCanalGreen = np.sum(imagenPrincipal[:, :, 1])#obtener suma total, canal verde
         sumaCanalBlue = np.sum(imagenPrincipal[:, :, 0])#obterner suma total, canal azul
-        # print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
+        print('.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.')
         print('RGB GW')
-        # print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)  
+        print(sumaCanalRed,sumaCanalGreen,sumaCanalBlue)  
         minimo = min(sumaCanalBlue,sumaCanalGreen,sumaCanalRed)   
-        # print('MINOMOOOO: ',minimo)
+        print('MINOMOOOO: ',minimo)
         rPrima,gPrima,bPrima = self.getRgbPrima(minimo,sumaCanalRed,sumaCanalGreen,sumaCanalBlue)
         self.resetImage(rPrima,gPrima,bPrima)
         cv2.imwrite('resultadoBalanceColor/gray-world.jpg',imagenPrincipal)
